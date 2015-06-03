@@ -4,12 +4,12 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>Pods-NoteExample-MagicalRecord.xcscheme</key>
+		<key>Pods-ExampleNotes-MagicalRecord.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>Pods-NoteExample.xcscheme</key>
+		<key>Pods-ExampleNotes.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -17,12 +17,12 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>32F33539CB72E0E9BC2DA02A</key>
+		<key>AD610B6A8E8075EAFD73FBAA</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>CBEF45790582F508B3FAF059</key>
+		<key>C005913666343446122C926F</key>
 		<dict>
 			<key>primary</key>
 			<true/>

@@ -1,15 +1,14 @@
 //
 //  AppDelegate.m
-//  NoteExample
+//  ExampleNotes
 //
 //  Created by mhtran on 6/1/15.
 //  Copyright (c) 2015 mhtran. All rights reserved.
 //
 
 #import "AppDelegate.h"
+#import <MagicalRecord/MagicalRecord.h>
 #import "NoteListTableViewController.h"
-#import <MagicalRecord/CoreData+MagicalRecord.h>
-
 @interface AppDelegate ()
 
 @end
@@ -19,18 +18,13 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    
     [MagicalRecord setupCoreDataStackWithAutoMigratingSqliteStoreNamed:@"Note.sqlite"];
-    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    
     NoteListTableViewController *listTableViewController = [NoteListTableViewController new];
-    UINavigationController *navicationController = [[UINavigationController alloc] initWithRootViewController:listTableViewController];
-    [navicationController.navigationBar setTranslucent:NO];
-    
-    self.window.rootViewController = navicationController;
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:listTableViewController];
+    [navigationController.navigationBar setTranslucent:NO];
+    self.window.rootViewController = navigationController;
     [self.window makeKeyAndVisible];
-    
     return YES;
 }
 
@@ -65,7 +59,7 @@
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
 
 - (NSURL *)applicationDocumentsDirectory {
-    // The directory the application uses to store the Core Data store file. This code uses a directory named "mhtranbn.NoteExample" in the application's documents directory.
+    // The directory the application uses to store the Core Data store file. This code uses a directory named "mhtranbn.ExampleNotes" in the application's documents directory.
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
 
@@ -74,7 +68,7 @@
     if (_managedObjectModel != nil) {
         return _managedObjectModel;
     }
-    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"NoteExample" withExtension:@"momd"];
+    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"ExampleNotes" withExtension:@"momd"];
     _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     return _managedObjectModel;
 }
@@ -88,7 +82,7 @@
     // Create the coordinator and store
     
     _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"NoteExample.sqlite"];
+    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"ExampleNotes.sqlite"];
     NSError *error = nil;
     NSString *failureReason = @"There was an error creating or loading the application's saved data.";
     if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {

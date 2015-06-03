@@ -1,6 +1,6 @@
 //
 //  main.m
-//  NoteExample
+//  ExampleNotes
 //
 //  Created by mhtran on 6/1/15.
 //  Copyright (c) 2015 mhtran. All rights reserved.

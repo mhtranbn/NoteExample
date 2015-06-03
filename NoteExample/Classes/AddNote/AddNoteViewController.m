@@ -1,16 +1,15 @@
 //
 //  AddNoteViewController.m
-//  NoteExample
+//  ExampleNotes
 //
-//  Created by mhtran on 6/1/15.
+//  Created by mhtran on 6/2/15.
 //  Copyright (c) 2015 mhtran. All rights reserved.
 //
 
 #import "AddNoteViewController.h"
 #import "NoteModel.h"
 #import "NoteService.h"
-
-@interface AddNoteViewController () <NoteServiceDelegate>
+@interface AddNoteViewController () <NoteServiceDelegate,UIImagePickerControllerDelegate, UIPickerViewDelegate, UINavigationControllerDelegate>
 
 @property (nonatomic, weak) IBOutlet UILabel *titleName;
 @property (nonatomic, weak) IBOutlet UITextField *titleTextField;
@@ -19,25 +18,38 @@
 @property (nonatomic, weak) IBOutlet UITextView *contentTextView;
 
 @property (nonatomic, weak) IBOutlet UIButton *addImageButton;
+
 - (IBAction)addImageAction:(id)sender;
 
 - (void)setupLocalization;
 - (void)setupNavigationBar;
 
 - (void)doneAddNoteAction:(id)sender;
-
 @property (nonatomic, strong) NoteService *service;
-
+@property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @end
 
 @implementation AddNoteViewController
 
-#pragma mark - View delegates
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    // Do any additional setup after loading the view from its nib.
     _service = [NoteService new];
     _service.delegate = self;
+    _titleTextField.text = _model.title;
+    _contentTextView.text = _model.content;
+    _imageView.image = [UIImage imageNamed:_model.imageUrl];
+    
+    UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc]
+                                           initWithTarget:self
+                                           action:@selector(hideKeyBoard)];
+    
+    [self.view addGestureRecognizer:tapGesture];
+}
+
+-(void)hideKeyBoard {
+    [_titleTextField resignFirstResponder];
+    [_contentTextView resignFirstResponder];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -47,7 +59,6 @@
     [self setupNavigationBar];
 }
 
-#pragma mark - Setups
 - (void)setupLocalization {
     _titleName.text = @"Title:";
     _contentName.text = @"Content:";
@@ -60,32 +71,48 @@
                                                                                            action:@selector(doneAddNoteAction:)];
 }
 
-#pragma mark - Actions
 - (void)doneAddNoteAction:(id)sender {
-    // Save data to core data
-    // Get data from view to model
     NSString *titleText = _titleTextField.text;
     NSString *contentText = _contentTextView.text;
-    // Pending for image
-    
-    // Check model is createNew or Editting
     if (_model == nil) {
-        NoteModel *model = [[NoteModel alloc] initWithTitle:titleText content:contentText imageURL:nil];
+        NSString *imagePath;
+        if (self.imageView.image) {
+            imagePath = NSTemporaryDirectory();
+            imagePath = [imagePath stringByAppendingPathComponent:[NSUUID UUID].UUIDString];
+            NSData *imageData = UIImageJPEGRepresentation(self.imageView.image, 1.0);
+            [imageData writeToFile:imagePath atomically:YES];
+        }
+        NoteModel *model = [[NoteModel alloc] initWithTitle:titleText content:contentText imageUrl:imagePath];
         [_service addNoteWithModel:model];
     }
     else {
         NSLog(@"editting");
+        NSString *imagePath;
+        imagePath = NSTemporaryDirectory();
+        imagePath = [imagePath stringByAppendingPathComponent:[NSUUID UUID].UUIDString];
+        NSData *imageData = UIImageJPEGRepresentation(self.imageView.image, 1.0);
+        [imageData writeToFile:imagePath atomically:YES];
         NoteModel *model = _model;
         model.title = _titleTextField.text;
         model.content = _contentTextView.text;
-        [_service updateNoteWithModel:model];
+        model.imageUrl = imagePath;
+        [_service editNoteWithModel:model];
     }
-    
 
 }
-
 - (void)addImageAction:(id)sender {
     NSLog(@"Add image");
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.delegate = self;
+    picker.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
+    [self presentViewController:picker animated:YES completion:nil];
+    
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo{
+    [picker dismissViewControllerAnimated:YES completion:^{
+        [self.imageView setImage:image];
+    }];   
 }
 
 #pragma mark - NoteServiceDelegate
@@ -111,5 +138,7 @@
     // Back to list view
     [self.navigationController popViewControllerAnimated:YES];
 }
+
+
 
 @end

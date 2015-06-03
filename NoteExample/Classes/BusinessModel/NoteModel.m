@@ -1,6 +1,6 @@
 //
 //  NoteModel.m
-//  NoteExample
+//  ExampleNotes
 //
 //  Created by mhtran on 6/1/15.
 //  Copyright (c) 2015 mhtran. All rights reserved.
@@ -10,12 +10,12 @@
 #import "Note.h"
 
 @implementation NoteModel
-- (instancetype)initWithTitle:(NSString *)title content:(NSString *)content imageURL:(NSString *)imageURL {
+- (instancetype)initWithTitle:(NSString *)title content:(NSString *)content imageUrl:(NSString *)imageUrl{
     self = [self init];
     if (self) {
         _title = title;
         _content = content;
-        _imageURL = imageURL;
+        _imageUrl = imageUrl;
     }
     return self;
 }
@@ -26,8 +26,9 @@
         _noteEntity = note;
         _title = note.title;
         _content = note.content;
-        _imageURL = note.imageURL;
+        _imageUrl = note.imageUrl;
         _dateCreated = note.dateCreated;
+        
     }
     return self;
 }
@@ -35,7 +36,8 @@
 
 @implementation NoteModel (ForBindingOnView)
 
-- (NSString *)dateCreatedString {
+
+- (NSString *)dataCreatedString{
     return [_dateCreated description];
 }
 
